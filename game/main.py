@@ -3,4 +3,9 @@ from randomQuestion import RandomQuestion
 from gui import Gui
 from audio import Audio
 
-__main__.py
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
