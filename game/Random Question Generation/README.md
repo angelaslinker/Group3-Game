@@ -3,15 +3,21 @@ This is a word processing program that's capable of automatically growing with a
 
 ## Files
 RQAI handles the creation and manipulation of several documents. All of these files can be deleted and automatically regenerated in the need of a hard reset with the data. Some of these files are needed to use RQAI to it's fullest ability and others aren't meant to be touched by anyone but the program. An outline of the files is listed below:
+
+```
 Directory: Categories (hidden)
-    Sub-file: Category_text_documents (AI only)
++--Sub-file: Category_text_documents (AI only)
 Directory: Organized_Questions (hidden)
-    Sub-file: OQuestions (AI only)
++--Sub-file: OQuestions (AI only)
 Directory: Questions (visible)
-    '(This spot is where input data files are to be fed)'
++--'(This spot is where input data files are to be fed)'
 Directory: Settings (hidden)
-    Sub-file: Category_Types.ini (The categories list, meant to be edited. All categories must be seperated by a comma and space: ', ')
-    Sub-file: Requirements.ini (Used by the Standalone for initialization)
++--Sub-file: Category_Types.ini (The categories list, meant to be edited. All categories must be seperated by a comma and space: ', ')
++--Sub-file: Requirements.ini (Used by the Standalone for initialization)
+Directory: Backups (hidden)
++--Sub-file: Backups_Log.txt (A list of all backup files the RQAI daemon has created.)
++--Sub-Directories: Backups (contains any number of backup files taken from the Categories folder.)
+```
 
 Categories files contain the largest amount of technical information which the system relies on as part of its decision making process. The RQAI will record in the category documents different sections broken up by a ":" character. The first section contains a word that was found as part of a subjects definition. The second section contains a count of the frequency of which this character has been found. The third section contains the signature of who added the information to help in complex sorting. The fourth and all subsequent sections contain the dates of when each occurence of the word was added.
 
@@ -46,3 +52,6 @@ Multiprocessing daemon to help with backups. --completed 11/8--
 Move or delete old data automatically to prevent clutter or buildup.
 Give the RQAI full control to expand the dataset given to it as fast as it's able too.
 Make Organized Questions the only set of questions that's referenced in automatic question lookup.
+
+## Video Tutorial
+https://youtu.be/G1Y9WT7ADXY

@@ -9,7 +9,7 @@ class RQAIGUI:
         print(r"   / __ \/ __ \ /   |  /  _/")
         print(r"  / /_/ / / / // /| |  / /  ")
         print(r" / _, _/ /_/ // ___ |_/ /   ")
-        print(r"/_/ |_|\___\_/_/  |_/___/   ")                                                                                               
+        print(r"/_/ |_|\___\_/_/  |_/___/   ")        
         print("\033[1;37;40m")
 
     def printOk(message):
@@ -40,6 +40,8 @@ class RQAIGUI:
     def printHelp():
         print("Command:   Result:")
         print("  help       View this message")
-        print("  training   Perform AI training")
         print("  build      Build the RQAI base")
+        print("  training   Perform AI training")
+        print("  restore    Restore a past data backup")
+        print("  daemon     Check for messages from the daemon")
         print("  exit       Exit the RQAI")

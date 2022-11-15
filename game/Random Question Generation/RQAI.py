@@ -1,10 +1,12 @@
 from RQAIGUI import RQAIGUI # Displays messages for the RQAI
 import string # String manipulation
 import os # File manipulation
+import sys # Make sure program runs on any system type
 from pydictionary import Dictionary # Definitions for words
 import spacy # Sentence processing library
 from datetime import datetime # Gets current date and time
 import multiprocessing # Used to initialize the daemon
+import random # Used for making random decisions
 
 """
 RQAI performes word processing to group similar questions together.
@@ -22,6 +24,7 @@ class RQAI:
     categories = [] # The categories in the cDirectory.
     nlp = None # A reusable spacy module to keep the program from wasting space with allocation of new variables.
     connectionQ = None # The queue containing messages between RQAI and its daemon.
+    keyLocks = {} # Locks to protect the system from multiple programs accessing the same critical section at the same time.
 
     """
     The initialization method checks through the local files to make sure that they exist, and then commits the local category files to memory. Also provides helpful messages to assist the user in avoiding errors.
@@ -71,60 +74,73 @@ class RQAI:
                 if (input().lower().__contains__("y")):
                     with open(os.path.join(self.qDirectory, filename ), "r") as file: # Reads through qDirectory chosen file and commits it to local memory
                         qContents = file.readlines()
-                    for question in qContents: # Reads through EVERY LINE in the questions document and asks the user to make decisions based off of those lines.
-                        defintionSet = self.GetQuestionSet(question) # Gets the words that go into the category files, these words are the definitions of the subjects of the question.
-                        guess = self.GuessQuestion(defintionSet) # Makes a guess looking for similar words in the category files and then returns the highest match.
-                        guessLocation = keyMap.get(guess) # Used for UI coloring, the guessLocation is the order that the location file appears in the file
-                        print("    ", end="") # tab
-                        print(f"{question.strip()}") # Prints the question that the program is currently examining without the \n
-                        print("    ", end="") # tab
-                        print(f"This looks like a \033[1;{(guessLocation % 6) + 31};40m{guess}\033[1;37;40m question. Press enter to input the question into the database as a {guess} question or enter a number for a different question type:") # AI guess
-                        types = ""
-                        for type, num in keyMap.items():
-                            if (types != ""):
-                                types += ", "
-                            types += f"(\033[1;{(num % 6) + 31};40m{type}: {num}\033[1;37;40m)"
-                        types += " or enter 'exit' to finish training." 
-                        print(types) # Prints out the keymap with the according file names as the options for recording the question.
-                        print(">>> ", end="") # UI
-                        entry = ""
-                        uI = input() # Get user input.
-                        if (uI == ""): # If UI blank:
-                            entry = guess
-                        elif(uI == "exit"): # If UI is 'exit':
-                            break;
-                        else: # Otherwise a character has been input.
-                            loop = True # loop variable to protect against bad input.
-                            while(loop): # Until good input is reached:
-                                try:
-                                    uI = int(uI) # Tries to get an integer from user input.
-                                    entry = list(keyMap.keys())[list(keyMap.values()).index(uI)] # Tries to get the assosciated key from user input.
-                                    loop = False
-                                except:
-                                    print(types) # Repeat question
-                                    uI = input() # Repeat input
-                        tempContents.append(question) # Adds the question to tempContents to use with removing questions from the qDirectory accessed file
-                        with open(f"{self.oQDirectory}/{self.oQuestionsTxt}", "r") as f:
-                            contents = f.readlines() # Get the contents of the organized question file
-                        if (contents.__contains__(f"{entry}:\n")): # If contents contain question already do nothing
-                            pass
-                        else:
-                            contents.append(f"{entry}:\n") # Contents don't contain question so append question to the end of the document
-                        contents.insert(contents.index(f"{entry}:\n") + 1, question) # Inserts new question after the category heading
-                        _tempContents = contents # Second _tempContents file to help with formatting issues where \n could potentially overtake document.
-                        for item in contents: # Pulls every question from oQuestions.
-                            _tempContents[_tempContents.index(item)] = item.strip() # Remove any newlines
-                            if(item == ""): # Stop buildup of newlines
-                                _tempContents.remove(item) 
-                        contents = _tempContents # Copies newline-less _tempContents to contents.
-                        with open(f"{self.oQDirectory}/{self.oQuestionsTxt}", "w") as f:
-                            contents = "\n".join(contents) # Joines newline-less lines with newlines before writing contents to file.
-                            f.write(contents) # Writes contents to file
-                        self.AddCategoriesTxt(defintionSet, entry) # Adds the definition set that was used earlier to the category files that were assigned by the entry
-                for item in tempContents: # Takes any questions that the user read from the questions file and removes them from the read file in the qDirectory
-                    qContents.remove(item) 
-                file = open(os.path.join(self.qDirectory, filename ), "w") # Opens the qDirectory accessed file with write permissions
-                file.writelines(qContents) # Writes new contents
+                    line = None
+                    for item in qContents: # Reads through EVERY LINE in the questions document and asks the user to make decisions based off of those lines. 
+                        try: # Tries to split items that may not be splittable
+                            if(item.split(':')[0].__contains__("question")): # Check for a question header in Caleb's document:
+                                line = item.split(':')[1].translate(str.maketrans('', '', string.punctuation)).strip(" ").strip() # Pull out punctuation and excess formatting from Caleb's JSON files.
+                                indexOf = qContents.index(item) # Get the index of the current item being read.
+                                loop = True # Boolean flag.
+                                while(loop): # Until the answer for the question is found:
+                                    indexOf += 1 # Increase the index by one.
+                                    if (qContents[indexOf].__contains__(r'"correct": true')): # Check if the answer is contained at the index.
+                                        line += f": {qContents[indexOf].split(':')[1].split(',')[0].translate(str.maketrans('', '', string.punctuation)).strip(' ')}" # Get the answer and strip excess JSON formatting.
+                                        loop = False # Flip the flag.
+                                defintionSet = self.GetQuestionSet(line.split(':')[0]) # Gets the words that go into the category files, these words are the definitions of the subjects of the question.
+                                guess = self.GuessQuestion(defintionSet) # Makes a guess looking for similar words in the category files and then returns the highest match.
+                                guessLocation = keyMap.get(guess) # Used for UI coloring, the guessLocation is the order that the location file appears in the file
+                                print("    ", end="") # tab
+                                print(f"{line.strip()}") # Prints the question that the program is currently examining without the \n
+                                print("    ", end="") # tab
+                                print(f"This looks like a \033[1;{(guessLocation % 6) + 31};40m{guess}\033[1;37;40m question. Press enter to input the question into the database as a {guess} question or enter a number for a different question type:") # AI guess
+                                types = ""
+                                for type, num in keyMap.items():
+                                    if (types != ""):
+                                        types += ", "
+                                    types += f"(\033[1;{(num % 6) + 31};40m{type}: {num}\033[1;37;40m)"
+                                types += " or enter 'exit' to finish training." 
+                                print(types) # Prints out the keymap with the according file names as the options for recording the question.
+                                print(">>> ", end="") # UI
+                                entry = ""
+                                uI = input() # Get user input.
+                                if (uI == ""): # If UI blank:
+                                    entry = guess
+                                elif(uI == "exit"): # If UI is 'exit':
+                                    break;
+                                else: # Otherwise a character has been input.
+                                    loop = True # loop variable to protect against bad input.
+                                    while(loop): # Until good input is reached:
+                                        try:
+                                            uI = int(uI) # Tries to get an integer from user input.
+                                            entry = list(keyMap.keys())[list(keyMap.values()).index(uI)] # Tries to get the assosciated key from user input.
+                                            loop = False
+                                        except:
+                                            print(types) # Repeat question
+                                            uI = input() # Repeat input
+                                tempContents.append(line.split(':')[0]) # Adds the question to tempContents to use with removing questions from the qDirectory accessed file
+                                with open(f"{self.oQDirectory}/{self.oQuestionsTxt}", "r") as f:
+                                    contents = f.readlines() # Get the contents of the organized question file
+                                if (contents.__contains__(f"{entry}:\n")): # If contents contain question already do nothing TODO
+                                    pass
+                                else:
+                                    contents.append(f"{entry}:\n") # Contents don't contain question so append question to the end of the document
+                                contents.insert(contents.index(f"{entry}:\n") + 1, f"{line.split(':')[0]}:{line.split(':')[1]}") # Inserts new question after the category heading
+                                _tempContents = contents # Second _tempContents file to help with formatting issues where \n could potentially overtake document.
+                                for item in contents: # Pulls every question from oQuestions.
+                                    _tempContents[_tempContents.index(item)] = item.strip() # Remove any newlines
+                                    if(item == ""): # Stop buildup of newlines
+                                        _tempContents.remove(item) 
+                                contents = _tempContents # Copies newline-less _tempContents to contents.
+                                with open(f"{self.oQDirectory}/{self.oQuestionsTxt}", "w") as f:
+                                    contents = "\n".join(contents) # Joines newline-less lines with newlines before writing contents to file.
+                                    f.write(contents) # Writes contents to file
+                                self.AddCategoriesTxt(defintionSet, entry) # Adds the definition set that was used earlier to the category files that were assigned by the entry
+                                for item in tempContents: # Takes any questions that the user read from the questions file and removes them from the read file in the qDirectory
+                                    qContents.remove(item) 
+                                file = open(os.path.join(self.qDirectory, filename ), "w") # Opens the qDirectory accessed file with write permissions
+                                file.writelines(qContents) # Writes new contents
+                        except: # Tried to split something that wasn't splittable
+                            pass # Move onto the next item.
         if (questionsCount == 0): # If no files wre found in qDirectory:
             message = "No files were found in the Questions folder."
             RQAIGUI.printWarning(message)
@@ -216,6 +232,9 @@ class RQAI:
                     pass
         if (rmvCount != 0): # If any files were removed:
             print(f"{rmvCount} file(s) removed in total from training list.") # Print how many files were removed
+        for file in self.cDirectory:
+            if not self.keyLocks.__contains__(file):
+                self.keyLocks[file] = multiprocessing.Lock()
     
     """
     The CheckCategory_Types method makes sure that the Settings/Category_Types.ini file exists and creates it if it does not.
@@ -228,6 +247,57 @@ class RQAI:
             open(os.path.join(self.sDirectory, self.sfileCat), "x") # Else create file:
             message = f"{self.sfileCat} was created successfully."
             RQAIGUI.printLoaded(message)
+
+    """
+    The GetCategoryTypes method is one of the methods used to connect to outside programs, it returns a list of options (categories) from which questions can be requested from the RQAI.
+    """
+    def GetCategoryTypes(self):
+        options = [] # An array listing all of the categories in cDirectory.
+        for item in os.listdir(self.cDirectory): # For every item in the cDirectory.
+            options.append(item.split(".")[0]) # Adds the item from the cDirectory to the options array.
+        return options # Returns options as a list.
+
+    """
+    The RandAnswers method is a helper method for the GetRandomQuestionAndAnswers() method. This is a recursive method that will ensure a set adds up to three answers that can be used by the parent method.
+    """
+    def RandAnswers(self, startIndex, endIndex, contents, answerSet=None):
+        if (answerSet == None): # If set hasn't been created yet:
+            answerSet = set() # Creates the set.
+        answerSet.add(f"False answer:{contents[random.randint(startIndex, endIndex)].split(':')[1]}") # Adds the false answer to the set.
+        if (len(answerSet) < 3): # If set is not yet three in length:
+            return self.RandAnswers(startIndex, endIndex, contents, answerSet) # Calls the method again.
+        return answerSet # Return the set.
+
+    """
+    The GetRandomQuestionAndAnswers method is responsible for accessing the oQuestions txt document and pulling a random question from the given category.
+    """
+    def GetRandomQuestionAndAnswers(self, category):
+        dictionary = {} # Dictionary for the correct and false answers and question.
+        with open(os.path.join(self.oQDirectory, self.oQuestionsTxt)) as file: # Opens the Organized Questions document:
+            contents = file.readlines() # Copies the file to local memory
+        if(contents.__contains__(f"{category}:\n")): # If contents contains the requested category:
+            startIndex = contents.index(f"{category}:\n") + 1 # Mark the index of the next item (where the data starts).
+            placeHolder = 0 # Placeholder to keep track of iterations.
+            try: # Potentially accesses index that doesn't exist:
+                while(len(contents[startIndex + placeHolder].split(" ")) > 1): # Check every line until the start of the next category is found.
+                    placeHolder += 1 # Adds one to the placeholder.
+            except IndexError: # Catch any potential indexErrors
+                placeHolder -= 1 # The end of the array is back one space
+            endIndex = startIndex + placeHolder # Map startIndex and placeHolder to endIndex.
+            if (endIndex - startIndex < 4): # If less than four entries exist:
+                RQAIGUI.printWarning("Multiple choice has insufficient options.") # Print warning.
+            val = random.randint(startIndex, endIndex) # Gets an item from the range of acceptabable values
+            dictionary[contents[val].split(':')[0]] = contents[val].split(':')[1] # Adds the item with its corresponding answer to the dictionary.
+            contents.remove(contents[val]) # Removes the question and answer from the contents
+            endIndex -= 1 # Move the endIndex back one for the deleted question
+            falseAnswers = self.RandAnswers(startIndex, endIndex, contents) # Get false answers from the helper method.
+            falseAnswers = list(falseAnswers) # Make a list out of the set.
+            for i in range(len(falseAnswers)): # For every item in the range:
+                dictionary[f"{falseAnswers[i].split(':')[0]}{i}"] = falseAnswers[i].split(':')[1] # Add the item to the dictionary.
+            return dictionary # Return the new dictionary.
+        else: # The file contents don't contain the category: 
+            print(f"{category} category either does not exist or has no entries.") # Print output info
+            return None # Return nothing.
 
     """
     The GenOQTxt method makes sure that the Organized_Questions/OQuestions.txt file exists and creates it if it does not.
@@ -279,6 +349,8 @@ class RQAI:
                     matchPercentage[filename.split(".")[0]] = (100 * amount/totalWordCount) # The percentage to which the file contents match the definitionSet contents.
         highestVal = 0 # Instantiate variables 
         highestKey = 0 # Instantiate variables
+        colors = [f"\033[1;{(i % 6) + 31};40m" for i in range(len(matchPercentage))]
+        print(self.MakeChart(matchPercentage, colors)) # Prints a graphical representation of how the AI is making its decisions
         for key, val in matchPercentage.items(): # For every value in the matchPercentage definitionSet:
             if (val >= highestVal): # If value is greater than or equal to highestKey replace highest with these values.
                 highestKey = key # Update highestKey
@@ -350,6 +422,54 @@ class RQAI:
             f.write(contents) # Writes the contents to the category file.
 
     """
+    MakeChart is a graphical representation of the match percentage showing how the AI is making decisions.
+    """
+    def MakeChart(self, matchPercentage, colors, size=10):
+        width = len(matchPercentage) * 2 + 3 # The width is the measurement of the blank space at the beginning of the line until the newline.
+        lines = [] # A blank array to store our lines.
+        lines.append("      " + "".join(["_" for _ in range(len(matchPercentage)*2)]) + "_\n") # Header
+        values = list(matchPercentage.values()) # Gets the values from our matchPercentage dictionary.
+        for i in range(size): # Body
+            line = None # A spot to hold each line in the body.
+            linePercent = 0 # A spot to hold the percentage indicator for this line.
+            if (i > 0): # Check to make sure we don't divide by 0.
+                linePercent = int(100/size*(size-i)) # Assignment of the percentage indicator.
+                line = f"{linePercent}" + "%" # String version of percentage indicator.
+            elif (i == size): # checks to see if i is 0:
+                line = "0%" # Special case for i is 0.
+            else: # linePercent needs to be 100:
+                linePercent = 100 # Assignment of special 100 case.
+                line = "100%" # Assignment of 100 to line.
+            while(len(line) <= 4): # If line length is not already 4 (length of characters "---%")
+                line += " " # Adds spaces to fill line length
+            line += "|" # Adds a visual divider.
+            for i in range(width - 2): # Width without the "|" characters
+                if (i % 2 == 1): # If at an even spot
+                    if(values[int(i/2)] >= linePercent): # If spot value for category is greater than or equal to the current line percent indicator:
+                        line += colors[int(i/2)] + "x" + "\033[1;37;40m" # Mark a colored "x".
+                    else: # Spot is less than percentage indicator:
+                        line += " " # Insert blank space.
+                else: # Spot is an even "filler" spot.
+                    line += " " # Adds a filler spot.
+            line += "|\n" # Terminate in a visual closing "|" and a newline.
+            lines.append(line) # Add the new line to the lines array.
+        lines.append(("0%   |") + "".join(["_" for _ in range(len(matchPercentage)*2)]) + "_|\n") # Footer
+        keys = list(matchPercentage.keys()) # List of the keys (names) in the matchPercentage variable
+        for i in range(3): # Creates a footer three characters in length.
+            try: # Tries to add labels from the document, adding line will fail if any document name is shorter in length than three letters.
+                line = "       " # Base line spacing.
+                for c in range(width - 3): # width without "|" characters and offset:
+                    if (c % 2 == 0): # If at an even spot:
+                        line += colors[int(c/2)] + keys[int(c/2)][i] + "\033[1;37;40m" # Adds character from category document name.
+                    else: # At an odd spot:
+                        line += " " # Adds a space to the line for the "filler" spot.
+                line += "\n" # Terminates the line with a newline.
+                lines.append(line) # Adds the new line to the lines array
+            except: # Catches cases where there was a document with a name shorter than three characters.
+                pass # I don't care enough to do anything about this case
+        return "".join(lines) # Concatenates the lines into a single new line.
+
+    """
     BstIndex controls the BstInternal method, calls the recursive method with the values determined here in the BstIndex. Efficiency is available below.
     """
     def BstIndex(self, array, val): # Modified BST to require as few lookups as possible for this program. Because this isn't a true bst with nodes there has to be an end condition where the computer searches through the remaining items, else an endless loop can occur. As the dataset approaches infinity the limit of lookups approaches log(n) + 10 + 1000/n. BST won't start dividing values until the dataset is larger than 37.016.
@@ -417,6 +537,55 @@ class RQAI:
         with open(os.join.path(self.cDirectory, f"{target}.txt"), "w") as file:
             file.writelines(contents) # Writes the array contents onto the target file.
 
+    """
+    The goal of the Restore method is to make use of the data that was being recorded by the RQAIDaemon, to take one of the verified backups it's made and overwrite the current data with that information.
+    """
+    def Restore(self):
+        print("Enter the date to restore at in a YYYY.MM.DD format:", end=" ") # Asks for data in a year/month/day format.
+        date = input() # Takes user input
+        sizeOf = len(date.split('.')) # Retrieve the size of the format, as long as at least a year, month, and day were included the program can continue.
+        if (sizeOf >= 3): # Check to make sure that UI is in a format that can be used.
+            fArray = [date.split('.')[0], date.split('.')[1], date.split('.')[2]] # The array created by user input
+            folderName = '.'.join(fArray).strip() # Makes a folder name to check for out of user input without a newline.
+            backupsList = os.listdir(self.bDirectory) # Array of folders in the backup directory.
+            if (backupsList.__contains__(folderName)): # If folders has a folder that matches the user input.
+                print(f"Match found at \033[1;32;40m{self.bDirectory}\\{folderName}\033[1;37;40m") # Print information about the match.
+                with open(os.path.join(self.bDirectory, self.bFileLog), 'r') as file: # Open the backup_log file
+                    contents = file.readlines() # Copies the contents to a local array
+                indexOf = contents.index(folderName + "\n") + 1 # Finds the first occurence of the folder matching the user input.
+                items = [] # Blank array for the items that will be found under the folder name.
+                bytes = 0 # Total bytes that the operation will involve.
+                while((contents[indexOf].split(' ')[len(contents[indexOf].split(' ')) - 1].strip() == "bytes")): # Every file line ends in "bytes".
+                    bytes += int(contents[indexOf].split(':')[1].split(' ')[0]) # Adds the backupfile_log byte information to the total number of bytes the operation will involve.
+                    print(f"    {contents[indexOf].strip()}") # Print the file information after a tab and without the extra \n.
+                    items.append(indexOf) # Adds the new item's index to items array
+                    indexOf += 1 # Adds one to the index for the next item that will be checked.
+                    if (indexOf + 1 > len(contents)): # Check to make sure that the file length isn't exceeded.
+                        break # File length exceeded: Break.
+                print("Are you sure you want to restore these files? (Y/n)?", end=" ") # Double check these are the fiels the user wants to restore.
+                uI = input() # Gets the user input
+                loop = True # loop variable to protect against bad input.
+                while(loop): # Until good input is reached:
+                    if (uI.lower().__contains__("y")): # If user input is "y"
+                        loop = False # Received good user input, so break the loop.
+                        for index in (items): # For every index listed in the items array:
+                            if (os.path.exists(os.path.join(self.cDirectory, contents[index].split('.')[0] + ".txt"))): # If file exists:
+                                os.remove(os.path.join(self.cDirectory, contents[index].split('.')[0] + ".txt")) # Remove the corresponding file from the cDirectory
+                            if (sys.platform.__contains__('win')): # This is a windows system and requires windows commands:
+                                os.popen(f"copy {os.path.join(self.bDirectory, folderName, contents[index].split(':')[0])} {os.path.join(self.cDirectory, contents[index].split('.')[0])}.txt") # Copy file using Windows commands.
+                            else: # System is a unix system:
+                                os.popen(f"cp {os.path.join(self.bDirectory, folderName, contents[index].split(':')[0])} {os.path.join(self.cDirectory, contents[index].split('.')[0])}.txt") # Copy file using Unix commands.
+                        print(f"Files successfully restored. \033[1;32;40m{bytes}\033[1;37;40m bytes written.") # Prints status information for the operation.
+                    elif (uI.lower().__contains__("n")): # Received good user input stating to break:
+                        loop = False # Stops the loop to keep asking for user input.
+                    else: # User input was bad.
+                        print("Are you sure you want to restore these files? (Y/n)?", end=" ") # Reprompts user input.
+                        uI = input() # Takes new input.
+            else: # There was no matching folder.
+                print("No match was found.") # Print the 'no match found' statement.
+        else: # Information wasn't specific enough:
+            print("Date must be in a YYYY.MM.DD format!") # Re-print the format.
+
 """
 The goal of the RQAIDaemon object is to maintain the integrity of RQAIs work. Designed for the RQAI class to do the creation of this object.
 """
@@ -426,6 +595,7 @@ class RQAIDaemon:
     connectionQ = None # Multiprocessing shared memory object.
     bDirectory = None # The directory where the daemon's backup work is contained.
     bFileLog = None # The log file for the daemon's backup work.
+    backupMaxSize = None # The max size allotted for the Backups folder before the program will start pruning data
 
     """
     The __init__ method serves as the entry point to the daemon where it will begin its daemonic tasks.
@@ -435,6 +605,7 @@ class RQAIDaemon:
         self.connectionQ = connectionQ # Copy the RQAI connectionQ object to Daemon's memory
         self.bDirectory = bDirectory # Copy the RQAI bDirectory to Daemon's memory
         self.bFileLog = bFileLog # Copy the RQAI bFileLog file to Daemon's memory
+        self.backupMaxSize = 25,000,000 # 25 Megabytes is the current size allotted to the backupMax folder before it will engage the pruning algorithm.
         currentFile = 0 # Count for the spot currently being read in the file list
         count = 0 # Count for total number of files                      
         for filename in os.listdir(self.cDirectory): # Gets a count of the total number of files in the cDirectory              
@@ -443,13 +614,78 @@ class RQAIDaemon:
             currentFile += 1 # Adds one to the loading variable for the current number of the file's load order                  
             if (self.VerifyFileIntegrity(filename)): # Reading the RQAI Files and committing them to local memory
                 self.connectionQ.put(f"File verified ({currentFile}/{count})") # UI information
-        self.DaemonEntry() # Begin daemon tasks.       
+        self.DaemonEntry() # Begin daemon tasks.
 
+    """
+    Pruning checks files that have already been saved in the backups folder to see how similar they are with other files in the backups folder once a threshold size is hit and automatically removes the older, smaller files under the assumption that they are less important than the newer, older files.
+    """
+    def Pruning(self): # In progress
+        with open(os.path.join(self.bDirectory, self.bFileLog)) as file:
+            contents = file.readlines()
+        totalSize = 0
+        for line in contents:
+            if(line.__contains__(':')):
+                totalSize += int(line.split(':')[1].split(' ')[0])
+        dictionary = {}
+        if (totalSize > self.backupMaxSize): 
+            for folder in (os.listdir(self.bDirectory)): # Sorts items in backup folders into a single dictionary for checking.
+                for item in folder:
+                    if not dictionary.__contains__(item.split(".")[0]):
+                        dictionary[item.split(".")[0]] = []
+                    dictionary[item.split(".")].append(os.path.join(self.bDirectory, folder, item))
+        for key in list(dictionary.keys()): # Access every dictionary key with its attached list of items:
+            for item1 in dictionary.get(key): # for every array in the dictionary: (n^2 loop to check items)
+                with open(item1) as file1:
+                    contents1 = file1.readline()
+                for item2 in dictionary.get(key): # Checks against every array except for itself:
+                    if (item2 != item1):
+                        with open(item2) as file2:
+                            contents2 = file2.readline()
+                        largerVal = int(contents1[0].split(":")[1]) # Assign the larger RQAIV val to largerVal
+                        smallerVal = int(contents2[0].split(":")[1]) # Assign the smaller RQAIV val to smallerVal
+                        if (largerVal < smallerVal): # If smallerVal is the bigger value
+                            largerVal = int(contents2[0].split(":")[1])
+                            smallerVal = int(contents1[0].split(":")[1])
+                        if (largerVal *.99 <= smallerVal): # If smallerValue is 90% of largerValue continue check:
+                            set1, set2 = set()
+                            for line in contents1:
+                                set1.add(line.split(":")[0])
+                            for line in contents2:
+                                set2.add(line.split(":")[0])
+                            lenOriginal = len(set1)
+                            if (len(set1.union(set2) == lenOriginal)): # No new words have been added, only new occurences, discard old information:
+                                if (item1.split("\\")[1] < item2.split("\\")[1]):
+                                    os.remove(item1)
+                                    olderVal = item1.split("\\")
+                                else:
+                                    os.remove(item2)
+                                    olderVal = item2.split("\\")
+                                indexOf = contents.index(olderVal) + 1
+                                while(contents[indexOf].split(' ')[1] == "bytes"):
+                                    if (contents[indexOf].split(' ')[0].__contains__(item1.split("\\")[2])):
+                                        contents.remove(contents[indexOf])
+                                    else:
+                                        indexOf += 1
+                                
     """
     DaemonEntry serves as the program control for the Daemon, assigning its tasks and controlling the flow of the program.
     """
     def DaemonEntry(self):
-        self.BackupData() # Check to make sure data is ready to be used
+        flags = [] # Flag to keep track of whether or not files are secure
+        flag = False # Starts flag in false position
+        for file in os.listdir(self.cDirectory): # Check every file in the cDirectory:
+            if (self.VerifyFileIntegrity(file)): # If the file is secure:
+                flags.append(True) # True: File is secure.
+            else: # File is not secure:
+                flags.append(False) # Append False: File is not secure.
+        for item in flags: # Check all flags created
+            if (item): # If item is true
+                flag = True # Indicator is set to True: Continue.
+            else: # There was an unsafe file:
+                flag = False # Indicator is set to False: Do not continue.
+                break # Stop the checks.
+        if (flag): # If flag is set to continue:
+            self.BackupData() # Start backing up data.
 
     """
     BackupData is the Daemon's way of making sure that the valuable data of the program is preserved against manual input errors, or any other kind of data error that may occur. Instantiating this class using multiprocessing creates a daemon that runs in the background.
@@ -478,23 +714,23 @@ class RQAIDaemon:
                         open(os.path.join(self.bDirectory, folderName, newFileName), 'x') # Create the backup item
                         with open(os.path.join(self.bDirectory, folderName, newFileName), 'w') as newFile: # Open the newly created backup item
                             newFile.writelines(contents) # Write the old file contents to a new file. TODO: Copy file instead of copying contents
-                        with open(os.path.join(self.bDirectory, self.bFileLog), 'r') as log: # Opens the system log file
-                            contents = log.readlines() # Copies the log files into a local array
+                        with open(os.path.join(self.bDirectory, self.bFileLog), 'r') as log: # Opens the system log file.
+                            contents = log.readlines() # Copies the log files into a local array.
                         if (contents.__contains__(folderName + "\n")): # Searches through the array to find if the folder exists already:
                             indexOf = contents.index(folderName + "\n") # Folder already exists, grabs its index.
-                            if not (indexOf + 1 >= len(contents)): # Make sure that we aren't trying to add data to a spot that doesn't exist
-                                contents.insert(indexOf + 1, f"{newFileName}:{f'{os.path.getsize(os.path.join(self.bDirectory, folderName, newFileName))}'} bytes") # Insert new item
-                            else: # We're at the end of the list
-                                contents.append(f"{newFileName}:{f'{os.path.getsize(os.path.join(self.bDirectory, folderName, newFileName))}'} bytes") # Appends rather than inserts the new value
-                        else: # The folder entry doesn't already exist
-                            contents.append(folderName) # adds the folder name to the file
-                            contents.append(f"{newFileName}:{f'{os.path.getsize(os.path.join(self.bDirectory, folderName, newFileName))}'} bytes") # Appends the entry onto the file
-                        newContents = []
-                        for item in contents:
-                            newContents.append(item.strip() + "\n")
+                            if not (indexOf + 1 >= len(contents)): # Make sure that we aren't trying to add data to a spot that doesn't exist.
+                                contents.insert(indexOf + 1, f"{newFileName}:{f'{os.path.getsize(os.path.join(self.bDirectory, folderName, newFileName))}'} bytes") # Insert new item into the backup file.
+                            else: # We're at the end of the list:
+                                contents.append(f"{newFileName}:{f'{os.path.getsize(os.path.join(self.bDirectory, folderName, newFileName))}'} bytes") # Appends rather than inserts the new value.
+                        else: # The folder entry doesn't already exist:
+                            contents.append(folderName) # adds the folder name to the file.
+                            contents.append(f"{newFileName}:{f'{os.path.getsize(os.path.join(self.bDirectory, folderName, newFileName))}'} bytes") # Appends the entry onto the file.
+                        newContents = [] # The new contents that will be written to the log file.
+                        for item in contents: # For every item in the log file contents.
+                            newContents.append(item.strip() + "\n") # Make sure there's a newline at the end.
                         with open(os.path.join(self.bDirectory, self.bFileLog), 'w') as log: # Opens the system log file
-                            log.writelines(newContents)
-            except IndexError as e: # Catch previously defined error of accessing a spot that may not exist
+                            log.writelines(newContents) # Write the new contents to the log file.
+            except IndexError as e: # Catch previously defined error of accessing a spot that may not exist.
                 self.connectionQ.put(f"Index error was reached : {e}") # File wasn't ready to be read, add the error to the multiprocessing shared memory object.
     
     """
@@ -531,20 +767,20 @@ class RQAIDaemon:
             else: # File doesn't contain errors
                 with open(f, "r") as file: # Open file with reading permissions.
                     contents = file.readlines() # Copy contents to an array.
-                with open(f, "w") as file: # Open file with read permissions
-                    rqaivLine = contents[0].split(':') # Split the contents by the ':' character
-                    dateAndTime = datetime.now() # The time when this method was called
+                with open(f, "w") as file: # Open file with read permissions.
+                    rqaivLine = contents[0].split(':') # Split the contents by the ':' character.
+                    dateAndTime = datetime.now() # The time when this method was called.
                     dt_string = dateAndTime.strftime("%Y.%m.%d.%H.%M.%S") # Reformats the date and time in a way that's more useful for the RQAI.
                     if (len(rqaivLine) > 2): # If the heading information already exists:
                         rqaivLine[2] = "verified" # Reupdate the header in array indice[2].
                         rqaivLine[3] = dt_string + "\n" # Reupdate the header in array indice[3].
                     else: # The header doesn't exist:
-                        rqaivLine[1] = rqaivLine[1].strip() # Clean the newline off of rqaivLine[1]
+                        rqaivLine[1] = rqaivLine[1].strip() # Clean the newline off of rqaivLine[1].
                         rqaivLine.append("verified") # Add the header information to array indice[2].
                         rqaivLine.append(dt_string + "\n") # Add the header information with formatting to array indice[3].
                     contents[0] = ":".join(rqaivLine) # Join the contents together using RQAI encoding.
-                    contents = ("").join(contents) # Joins all the contents together into a single string
+                    contents = ("").join(contents) # Joins all the contents together into a single string.
                     file.writelines(contents) # Writes all the lines of the edited contents array to the file.
-                    return True
+                    return True # The file was verified.
 
 # The area below is used for debugging and should be empty, if it is not empty it is recommended to clear it.

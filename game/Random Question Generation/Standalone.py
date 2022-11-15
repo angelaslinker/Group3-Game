@@ -97,8 +97,6 @@ if __name__ == "__main__": # Check to ensure that only the main thread can make 
     daemon.start() # running processes
     # daemon.join() # wait until processes finish
     while(True):
-        while(not _RQAI.connectionQ.empty()):
-            print(f"Messages from Daemon while you were away: {_RQAI.connectionQ.get()}")
         print(">>>", end=" ")
         userInput = input()
         if (userInput.lower().__contains__("help")):
@@ -107,7 +105,14 @@ if __name__ == "__main__": # Check to ensure that only the main thread can make 
             _RQAI.Build()
         elif(userInput.lower().__contains__("training")):
             _RQAI.AITraining()
+        elif(userInput.lower().__contains__("restore")):
+            _RQAI.Restore()
+        elif(userInput.lower().__contains__("daemon")):
+            while(not _RQAI.connectionQ.empty()):
+                print(f"\033[1;36;40mDaemon completed tasks:\033[1;37;40m {_RQAI.connectionQ.get()}")
         elif(userInput.lower().__contains__("exit")):
             os._exit(0)
+        else:
+            _RQAI.GetCategoryTypes()
+            _RQAI.GetRandomQuestionAndAnswers("History")
 
-"""rq = RandomQuestions()"""
