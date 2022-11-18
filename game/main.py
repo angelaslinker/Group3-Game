@@ -1,7 +1,6 @@
-from database import Database
-from randomQuestion import RandomQuestion
+from randomQuestionGeneration import RandomQuestion
 from gui import Gui
-from audio import Audio
+from audio_services.audio_sound_effect import AudioSoundEffect
 
 
 def main():
