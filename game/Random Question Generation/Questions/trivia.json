@@ -1,0 +1,354 @@
+[
+    {
+      "question": "Which continent has the smallest land area?",
+      "answers": [
+        { "text": "Australia", "correct": true, "choice": "A" },
+        { "text": "North America", "correct": false, "choice": "B" },
+        { "text": "Europe", "correct": false, "choice": "C" },
+        { "text": "Antarctica", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Regions of the world often have different plant and animal life because they have different?",
+      "answers": [
+        { "text": "Environments", "correct": true, "choice": "A" },
+        { "text": "Cultures", "correct": false, "choice": "B" },
+        { "text": "Raw materials", "correct": false, "choice": "C" },
+        { "text": "Nationalities", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which feature would most often be shown on a political map?",
+      "answers": [
+        { "text": "Topography", "correct": false, "choice": "A" },
+        { "text": "Capital cities", "correct": true, "choice": "B" },
+        { "text": "Type of climate", "correct": false, "choice": "C" },
+        { "text": "Elevation", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which imaginary line circles Earth at 0° latitude?",
+      "answers": [
+        { "text": "Tropic of Cancer", "correct": false, "choice": "A" },
+        { "text": "Tropic of Capricorn", "correct": false, "choice": "B" },
+        { "text": "Equator", "correct": true, "choice": "C" },
+        { "text": "Prime meridian", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "In which region did China's earliest civilizations develop?",
+      "answers": [
+        { "text": "Gobi Desert", "correct": false, "choice": "A" },
+        { "text": "Himalaya Mountains", "correct": false, "choice": "B" },
+        { "text": "Yellow River Valley", "correct": true, "choice": "C" },
+        { "text": "Tibetan Plateau", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which statement is accurate about the geography of the Middle East?",
+      "answers": [
+        { "text": "Large areas of land are used for rice cultivation.", "correct": false, "choice": "A" },
+        { "text": "The region experiences seasonal monsoons", "correct": false, "choice": "B" },
+        { "text": "Most of the region has an arid climate", "correct": true, "choice": "C" },
+        { "text": "The region has many broad fertile plains", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Henry Huson is best known for exploring?",
+      "answers": [
+        { "text": "Countries that belong to the Organization of American States (OAS).", "correct": false, "choice": "A" },
+        { "text": "Continents of North and South America.", "correct": false, "choice": "B" },
+        { "text": "Areas of the Western Hemisphere south of the United States", "correct": true, "choice": "C" },
+        { "text": "Countries that have close economic ties with Spain.", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Both Japan and Indonesia are made up of a chain of islands called?",
+      "answers": [
+        { "text": "a peninsula.", "correct": false, "choice": "A" },
+        { "text": "a delta.", "correct": false, "choice": "B" },
+        { "text": "an archipelago.", "correct": true, "choice": "C" },
+        { "text": "an atoll.", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which geographic characteristic is shared by both Greece and Japan?",
+      "answers": [
+        { "text": "Navigable rivers", "correct": false, "choice": "A" },
+        { "text": "Tropical rain forests", "correct": false, "choice": "B" },
+        { "text": "Irregular coastline", "correct": true, "choice": "C" },
+        { "text": "abundant mineral resources", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which statement best describes the geography of Africa?",
+      "answers": [
+        { "text": "Most of the continent is made up of tropical rain forests", "correct": false, "choice": "A" },
+        { "text": "Most major rivers are navigable for their entire length", "correct": false, "choice": "B" },
+        { "text": "Deserts and savannas cover almost half of the continent", "correct": true, "choice": "C" },
+        { "text": "The irregular coastline provedes many natural harbors", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which of these nations is located closest to the Philippines, Malaysia, and Indonesia?",
+      "answers": [
+        { "text": "Korea", "correct": false, "choice": "A" },
+        { "text": "Somalia", "correct": false, "choice": "B" },
+        { "text": "Vietnam", "correct": true, "choice": "C" },
+        { "text": "Pakistan", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which geographic feature made it difficult to unify South America?",
+      "answers": [
+        { "text": "Straits of Magellan", "correct": false, "choice": "A" },
+        { "text": "Argentinian pampas", "correct": false, "choice": "B" },
+        { "text": "Andes Mountains", "correct": true, "choice": "C" },
+        { "text": "Gulf of Mexico", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which geographic feature has helped isolate China?",
+      "answers": [
+        { "text": "Andes Mountains", "correct": false, "choice": "A" },
+        { "text": "Kalahari Desert", "correct": false, "choice": "B" },
+        { "text": "Himalaya Mountains", "correct": true, "choice": "C" },
+        { "text": "Great Rift Valley", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which two Great Lakes border New York State?",
+      "answers": [
+        { "text": "Huron and Erie", "correct": false, "choice": "A" },
+        { "text": "Michigan and Huron", "correct": false, "choice": "B" },
+        { "text": "Erie and Ontario", "correct": true, "choice": "C" },
+        { "text": "Ontario and Superior", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "One way in which South Korea, Saudi Arabia, and India are geographically similar is that each is located on?",
+      "answers": [
+        { "text": "an island.", "correct": false, "choice": "A" },
+        { "text": "an archipelago.", "correct": false, "choice": "B" },
+        { "text": "a peninsula.", "correct": true, "choice": "C" },
+        { "text": "an isthmus.", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Both the United States and Mexico are located on the continent of?",
+      "answers": [
+        { "text": "Africa", "correct": false, "choice": "A" },
+        { "text": "South America", "correct": false, "choice": "B" },
+        { "text": "North America", "correct": true, "choice": "C" },
+        { "text": "Europe", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Which nation is located on a peninsula?",
+      "answers": [
+        { "text": "Brazil", "correct": false, "choice": "A" },
+        { "text": "Phillippines", "correct": false, "choice": "B" },
+        { "text": "Saudi Arabia", "correct": true, "choice": "C" },
+        { "text": "Austria", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "Italy, Korea, Spain, and India are similar in that each is considered?",
+      "answers": [
+        { "text": "an archipelago.", "correct": false, "choice": "A" },
+        { "text": "a landlocked nation", "correct": false, "choice": "B" },
+        { "text": "a peninsula.", "correct": true, "choice": "C" },
+        { "text": "an island nation", "correct": false, "choice": "D" } ]
+    },
+    {
+      "question": "A family member who lived long ago is called?",
+      "answers": [
+        { "text": "a citizen", "correct": false, "choice": "A" },
+        { "text": "a mayor", "correct": false, "choice": "B" },
+        { "text": "an ancestor", "correct": true, "choice": "C" },
+        { "text": "an adult", "correct": false, "choice": "D" } ]
+    },
+    {
+        "question": "Nomads are most likely to?",
+        "answers": [
+          { "text": "form a permanent settlement", "correct": false, "choice": "A" },
+          { "text": "move from place to place", "correct": true, "choice": "B" },
+          { "text": "start a farm community", "correct": false, "choice": "C" },
+          { "text": "build a school", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "Generation after generation, people tell stores to their children about their ancestors. When this happens, it is called?",
+        "answers": [
+          { "text": "oral history", "correct": true, "choice": "A" },
+          { "text": "written biographies", "correct": false, "choice": "B" },
+          { "text": "historical artifacts", "correct": false, "choice": "C" },
+          { "text": "library research", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "What is a 100-year period of time called?",
+        "answers": [
+          { "text": "a decade", "correct": false, "choice": "A" },
+          { "text": "millenium", "correct": false, "choice": "B" },
+          { "text": "century", "correct": true, "choice": "C" },
+          { "text": "light-year", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "The language, customs, and beliefs that a group of people share are part of its?",
+        "answers": [
+          { "text": "economy", "correct": false, "choice": "A" },
+          { "text": "environment", "correct": false, "choice": "B" },
+          { "text": "culture", "correct": true, "choice": "C" },
+          { "text": "government", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "For thousands of years people have passed on their values, ideas, and traditions through?",
+        "answers": [
+          { "text": "radio and television", "correct": false, "choice": "A" },
+          { "text": "newspapers and magazines", "correct": false, "choice": "B" },
+          { "text": "books and movies", "correct": false, "choice": "C" },
+          { "text": "legends and folktales", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "Early settlements had to be located near a source of?",
+        "answers": [
+          { "text": "water", "correct": true, "choice": "A" },
+          { "text": "coal", "correct": false, "choice": "B" },
+          { "text": "lumber", "correct": false, "choice": "C" },
+          { "text": "gold", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "One goal of Christopher Columbus, Jacques Cartier, and Henry Hudson was to",
+        "answers": [
+          { "text": "settle New York State", "correct": false, "choice": "A" },
+          { "text": "start colonies in Virginia", "correct": false, "choice": "B" },
+          { "text": "explore the Great lakes", "correct": false, "choice": "C" },
+          { "text": "find a shorter water route to Asia", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "Which term includes the other three terms?",
+        "answers": [
+          { "text": "art", "correct": false, "choice": "A" },
+          { "text": "culture", "correct": true, "choice": "B" },
+          { "text": "languages", "correct": false, "choice": "C" },
+          { "text": "religion", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "A main reason for the colonial rebellion against the British during the American Revolution was?",
+        "answers": [
+          { "text": "shortage of tea", "correct": false, "choice": "A" },
+          { "text": "religious freedom", "correct": false, "choice": "B" },
+          { "text": "absence of British soldiers", "correct": false, "choice": "C" },
+          { "text": "taxation without representation", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "The capital city of a state or country is important because it?",
+        "answers": [
+          { "text": "has many buildings", "correct": false, "choice": "A" },
+          { "text": "is the center of the government", "correct": true, "choice": "B" },
+          { "text": "is a good place to live", "correct": false, "choice": "C" },
+          { "text": "has many museums", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "Which event happened first?",
+        "answers": [
+          { "text": "Henry Ford built automobiles", "correct": false, "choice": "A" },
+          { "text": "Airline travel became popular", "correct": false, "choice": "B" },
+          { "text": "The Erie Canal opened", "correct": true, "choice": "C" },
+          { "text": "Railroads became popular", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "A settlement that is ruled by another country is called?",
+        "answers": [
+          { "text": "a state", "correct": false, "choice": "A" },
+          { "text": "a hemisphere", "correct": false, "choice": "B" },
+          { "text": "a colony", "correct": true, "choice": "C" },
+          { "text": "an island", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "Who as the commander of the Continental Army in the Revolutionary War?",
+        "answers": [
+          { "text": "Benjamin Franklin", "correct": false, "choice": "A" },
+          { "text": "Paul Revere", "correct": false, "choice": "B" },
+          { "text": "George Washington", "correct": true, "choice": "C" },
+          { "text": "Thomas Jefferson", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "Which list of events is in order from earliest to latest?",
+        "answers": [
+          { "text": "arrival of Europeans -> Revolutionary War -> colonial period", "correct": false, "choice": "A" },
+          { "text": " Revolutionary War -> arrival of Europeans -> colonial period", "correct": false, "choice": "B" },
+          { "text": "arrival of Europeans -> colonial period -> Revolutionary War", "correct": true, "choice": "C" },
+          { "text": "colonial period -> arrival of Europeans -> Revolutionary War", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "Most settlers who came to New England in the early 1600's were searching for?",
+        "answers": [
+          { "text": "better farmland", "correct": false, "choice": "A" },
+          { "text": "religious freedom", "correct": true, "choice": "B" },
+          { "text": "gold and silver", "correct": false, "choice": "C" },
+          { "text": "a passageway to the Pacific", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "People who favored independence during the American Revolution were called?",
+        "answers": [
+          { "text": "Confederates", "correct": false, "choice": "A" },
+          { "text": "Loyalists", "correct": false, "choice": "B" },
+          { "text": "Redcoats", "correct": false, "choice": "C" },
+          { "text": "Patriots", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "Congress is the lawmaking branch of which level of government?",
+        "answers": [
+          { "text": "local", "correct": false, "choice": "A" },
+          { "text": "country", "correct": false, "choice": "B" },
+          { "text": "state", "correct": false, "choice": "C" },
+          { "text": "federal", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "In the United States, how often are presidential elections held?",
+        "answers": [
+          { "text": "every six years", "correct": false, "choice": "A" },
+          { "text": "every two years", "correct": false, "choice": "B" },
+          { "text": "every four years", "correct": true, "choice": "C" },
+          { "text": "every year", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "In which type of home did the early Iroquois (Haudenosaunee) most often live?",
+        "answers": [
+          { "text": "igloo", "correct": false, "choice": "A" },
+          { "text": "teepee", "correct": false, "choice": "B" },
+          { "text": "cabin", "correct": false, "choice": "C" },
+          { "text": "longhouse", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "Which person wrote much of the Declaration of Independence, was a political leader during the Revolution, and later became president of the United States?",
+        "answers": [
+          { "text": "Benjamin Franklin", "correct": false, "choice": "A" },
+          { "text": "Thomas Jefferson", "correct": true, "choice": "B" },
+          { "text": "Patrick Henry", "correct": false, "choice": "C" },
+          { "text": "Abraham Lincoln", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "A cencus is taken every ten years in the United States to determine a state's?",
+        "answers": [
+          { "text": "location", "correct": false, "choice": "A" },
+          { "text": "customs", "correct": false, "choice": "B" },
+          { "text": "traditions", "correct": false, "choice": "C" },
+          { "text": "population", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "Which group if items did the Native American Indians introduce to Europeans?",
+        "answers": [
+          { "text": "corn, tobacco, squash", "correct": true, "choice": "A" },
+          { "text": "gold, silver, and copper", "correct": false, "choice": "B" },
+          { "text": "silk, tea, and spices", "correct": false, "choice": "C" },
+          { "text": "horses, rifles, and gunpowder", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "The American colonists who supported the British government during the Revolutionary War were known as?",
+        "answers": [
+          { "text": "Whigs", "correct": false, "choice": "A" },
+          { "text": "rebels", "correct": false, "choice": "B" },
+          { "text": "Patriots", "correct": false, "choice": "C" },
+          { "text": "Loyalists", "correct": true, "choice": "D" } ]
+      },
+      {
+        "question": "Which battle was the turning point of the Revolutionary War?",
+        "answers": [
+          { "text": "Saratoga", "correct": true, "choice": "A" },
+          { "text": "Long Island", "correct": false, "choice": "B" },
+          { "text": "West Point", "correct": false, "choice": "C" },
+          { "text": "Fort Ticonderoga", "correct": false, "choice": "D" } ]
+      },
+      {
+        "question": "The first ten amendments to the United States Constitution are called the?",
+        "answers": [
+          { "text": "Preamble", "correct": false, "choice": "A" },
+          { "text": "Bill of Rights", "correct": true, "choice": "B" },
+          { "text": "Articles of Confederation", "correct": false, "choice": "C" },
+          { "text": "Declaration of Independence", "correct": false, "choice": "D" } ]
+      }
+  ]
