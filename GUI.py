@@ -4,11 +4,10 @@ from tkinter import *
 from tkinter import messagebox as mb
 #import json to use json file for data
 import json
-
-from Standalone import RandomQuestions
+import random
 
 #import AI
-from RQAI import RQAI
+from AngelaRQAI import AngelaRQAI
 
 
 
@@ -43,14 +42,14 @@ class Quiz:
 		self.buttons()
 		
 		# no of questions
-		self.data_size=len(question)
+		# self.data_size=len()
 		
 		# keep a counter of correct answers
 		self.correct=0
 
-
-		
-
+		#Get questionn and answers 
+		self.getQuestion()
+		self.getAnswers()
 
 	# This method is used to display the result
 	# It counts the number of correct and wrong answers
@@ -58,12 +57,12 @@ class Quiz:
 	def display_result(self):
 		
 		# calculates the wrong count
-		wrong_count = self.data_size - self.correct
+		wrong_count = 10 - self.correct
 		correct = f"Correct: {self.correct}"
 		wrong = f"Wrong: {wrong_count}"
 		
 		# calcultaes the percentage of correct answers
-		score = int(self.correct / self.data_size * 100)
+		score = int(self.correct / 10 * 100)
 		result = f"Score: {score}%"
 		
 		# Shows a message box to display the result
@@ -96,7 +95,7 @@ class Quiz:
 		self.q_no += 1
 		
 		# checks if the q_no size is equal to the data size
-		if self.q_no==self.data_size:
+		if self.q_no==10:
 			
 			# if it is correct then it displays the score
 			self.display_result()
@@ -139,24 +138,44 @@ class Quiz:
 	# question which we obtain through the question number and Updates
 	# each of the options for the current question of the radio button.
 	def display_options(self):
-		val=0
-		
 		# deselecting the options
 		self.opt_selected.set(0)
-		
+		dictionary = _RQAI.GetRandomQuestionAndAnswers("History") # This will return a dictionary with one question, the corresponding correct answer, and three answers marked as being incorrect.
+		answers = list(dictionary.values())
+
+		# correctanswer = answers[0]
+		# falseAnswer1 = answers[1]
+		# falseAnswer2 = answers[2]
+		# falseAnswer3 = answers[3] # (q: a, fq: fa, fq: fa, fq: fa)
 		# looping over the options to be displayed for the
 		# text of the radio buttons.
-		
-		# for option in options[self.q_no]:
-		# 	self.opts[val]['text']=option
-		# 	val+=1
 
 
 	# This method shows the current Question on the screen
+
+	def getQuestion(self):
+		numberOfQuestions = 0
+		categories = _RQAI.GetCategoryTypes()
+		while numberOfQuestions < 10:
+			dictionary = _RQAI.GetRandomQuestionAndAnswers("History") # This will return a dictionary with one question, the corresponding correct answer, and three answers marked as being incorrect.
+			question = list(dictionary.keys())[0]
+			answers = list(dictionary.values())
+			print(answers)
+			# self.getAnswers(answers)
+			numberOfQuestions += 1
+			
+		return question
+
+	def getAnswers(answers):
+		return answers
+
 	def display_question(self):
 		
+		question = self.getQuestion()
+
+
 		# setting the Question properties
-		q_no = Label(gui, text=question[self.q_no], width=60,
+		q_no = Label(gui, text=question, width=60,
 		font=( 'ariel' ,16, 'bold' ), anchor= 'w' )
 		
 		#placing the option on the screen
@@ -183,6 +202,7 @@ class Quiz:
 		# initialize the list with an empty list of options
 		q_list = []
 		
+
 		# position of the first option
 		y_pos = 150
 		
@@ -190,7 +210,7 @@ class Quiz:
 		while len(q_list) < 4:
 			
 			# setting the radio button properties
-			radio_btn = Radiobutton(gui,text=" ",variable=self.opt_selected,
+			radio_btn = Radiobutton(gui,text=self.getQuestion(),variable=self.opt_selected,
 			value = len(q_list)+1,font = ("ariel",14))
 			
 			# adding the button to the list
@@ -214,28 +234,7 @@ gui.geometry("800x450")
 # set the title of the Window
 gui.title("Group 3 Quiz")
 
-# get the data from the json file
-_RQAI=RQAI()
-
-	# data = _RQAI.load()
-categories = _RQAI.categories # This will return the list of categories currently added to the AI
-dictionary = RandomQuestions("History") # This will return a dictionary with one question, the corresponding correct answer, and three answers marked as being incorrect.
-answers = list(dictionary.values())
-question = list(dictionary.keys())[0]
-correctanswer = answers[0]
-falseAnswer1 = answers[1]
-falseAnswer2 = answers[2]
-falseAnswer3 = answers[3] # (q: a, fq: fa, fq: fa, fq: fa)
-
-# with open('(_RQAI.txt') as f:
-# 	data = _RQAI.load(f)
-
-# set the question, options, and answer
-
-# question = (data['question'])
-# options = (data['options'])
-# correctAnswer = (data[ ''])
-
+_RQAI=AngelaRQAI()
 
 # create an object of the Quiz Class.
 quiz = Quiz()
