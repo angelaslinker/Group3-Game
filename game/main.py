@@ -1,10 +1,8 @@
-from randomQuestionGeneration import RandomQuestion
-from gui import Gui
-from audio_services.audio_sound_effect import AudioSoundEffect
+import randomQuestionGeneration.GUI
 
 
 def main():
-    pass
+    randomQuestionGeneration.GUI()
 
 if __name__ == "__main__":
     main()

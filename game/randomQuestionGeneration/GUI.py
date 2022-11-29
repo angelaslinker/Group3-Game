@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter import messagebox as mb
 from random import randrange
-from AngelaRQAI import AngelaRQAI
+from randomQuestionGeneration.AngelaRQAI import AngelaRQAI
+from audio_services.audio_sound_effect import AudioSoundEffect
 
 question = []
 options = []
@@ -37,18 +38,25 @@ class Quiz:
 
 		score = int(self.correct / self.data_size * 100)
 		result = f"Score: {score}%"
-		
+
+		play = AudioSoundEffect()
+		if score >= 70:
+			play.playSound(2)
+		else:
+			play.playSound(1)
+
 		mb.showinfo("Result", f"{result}\n{correct}\n{wrong}")
 
 
 	def check_ans(self, q_no):
-		if self.opt_selected.get() == answer[q_no]:
+		
+		if self.opt_selected.get() == (answer[q_no] + 1):
 			return True
 
 
 	def next_btn(self):
 		
-		if self.check_ans(self.q_no):			
+		if self.check_ans(self.q_no):
 			self.correct += 1
 		
 		self.q_no += 1
@@ -82,11 +90,12 @@ class Quiz:
 			val+=1
 
 
-	def display_question(self):		
-		q_no = Label(gui, text=question[self.q_no], width=60,
-		font=( 'ariel' ,16, 'bold' ), anchor= 'w' )
+	def display_question(self):
+		text= Text(gui,wrap=WORD)
+		q_no = Label(gui, text=question[self.q_no], width=60, wraplength=700, justify="left",
+		font=( 'ariel' ,16, 'bold' ), anchor= 'w')
 		
-		q_no.place(x=70, y=100)
+		q_no.place(x=70, y=90)
 
 
 	def radio_buttons(self):
@@ -100,7 +109,7 @@ class Quiz:
 			q_list.append(radio_btn)
 			radio_btn.place(x = 100, y = y_pos)			
 			y_pos += 40
-		
+
 		return q_list
 
 

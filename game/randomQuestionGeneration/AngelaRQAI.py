@@ -1,8 +1,8 @@
 import os
 import random
-class AngelaRQAI:
+class AngelaRQAI():
     cDirectory = "Categories" # Folder where RQAI AI processing data is stored.
-    oQDirectory = "Organized_Questions" # Folder that contains the sorted questions file.
+    oQDirectory = "randomQuestionGeneration\\Organized_Questions" # Folder that contains the sorted questions file.
     oQuestionsTxt = "OQuestions.txt" # File where the sorted questions are contained.
     qDirectory = "Questions" # Folder for user input of new, unsorted question files.
     sDirectory = "Settings" # Folder for the local settings that build the RQAI.

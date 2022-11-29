@@ -10,25 +10,20 @@ mixer.init()  # Initialize mixer
 class AudioSoundEffect():
     def __init__(self):
         '''Initializes audio service'''
-        PATH = "game/audio_services/"
-        self._drumroll_sound = mixer.Sound(PATH + "drumroll.wav")
+        PATH = "audio_services/"
         self._negativeBeeps_sound = mixer.Sound(PATH + "negativeBeeps.wav")
         self._success_sound = mixer.Sound(PATH + "success.wav")
 
     def playSound(self, type):
         if type == 1:
-            self._drumroll_sound.play()
-            time.sleep(5)
-        if type == 2:
             self._negativeBeeps_sound.play()
-            time.sleep(2)
-        if type == 3:
+            # time.sleep(2)
+        if type == 2:
             self._success_sound.play()
-            time.sleep(2)
+            # time.sleep(2)
 
 
 # Test AudioSoundEffect class
 # play = AudioSoundEffect()
 # play.playSound(1)
 # play.playSound(2)
-# play.playSound(3)
