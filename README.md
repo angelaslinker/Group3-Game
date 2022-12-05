@@ -27,6 +27,13 @@ Python main.py
 
 The Visual Studio Code IDE was used along with a JSON database, to include the questions/answers for the game, and the Tkinter, Pygame, Random and OS libraries to create this Python language game.
 
+# Collaborators
+
+* Angela Slinker (angela.r.slinker@gmail.com)
+* Antonio Saucedo (antoniojesus@byui.edu)
+* Brian Anderson (173brian@gmail.com)
+* Caleb Barnhart (finnbarnhart143@gmail.com)
+
 # Useful Websites
 
 * [Visual Studio Code](https://code.visualstudio.com/)
@@ -36,3 +43,9 @@ The Visual Studio Code IDE was used along with a JSON database, to include the q
 * [Pygame documentation](https://www.pygame.org/docs/ref/mixer.html)
 * [Random documentation](https://docs.python.org/3/library/random.html)
 * [OS documentation](https://docs.python.org/3/library/os.html)
+
+# Future Work
+
+* 
+* 
+* 
