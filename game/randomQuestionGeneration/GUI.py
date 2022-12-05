@@ -8,7 +8,7 @@ question = []
 options = []
 answer = []
 
-gameTitle = "Group 3 Game"
+gameTitle = "AIQ Test"
 
 _RQAI=AngelaRQAI()
 
@@ -18,7 +18,7 @@ class Quiz:
 		self.opt_selected=IntVar()
 		
 		# Title
-		Label(gui, text=gameTitle, width=50, bg="blue",fg="white", font=("ariel", 20, "bold")).place(x=0, y=2)
+		Label(gui, text=gameTitle, width=62, bg="blue",fg="white", font=("ariel", 20, "bold")).place(x=0, y=2)
 
 		self.display_question()
 		
@@ -71,12 +71,12 @@ class Quiz:
 
 	def buttons(self):		
 		next_button = Button(gui, text="Next",command=self.next_btn,
-		width=10,bg="blue",fg="white",font=("ariel",16,"bold"))
+		width=10,bg="blue",fg="blue",font=("ariel",16,"bold"))
 		
 		next_button.place(x=350,y=380)
 		
 		quit_button = Button(gui, text="Quit", command=gui.destroy,
-		width=5,bg="black", fg="white",font=("ariel",16," bold"))
+		width=5,bg="black", fg="red",font=("ariel",16," bold"))
 		
 		quit_button.place(x=700,y=50)
 
