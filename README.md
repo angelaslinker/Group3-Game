@@ -1,4 +1,4 @@
-# NAME
+# AIQ Test
 
 Have you been looking for a fun way to learn about History and Geography? Do you need a fun way to teach your children some fun facts about what they will be learning down the road? If you answered yes, than you are in the right place!
 
